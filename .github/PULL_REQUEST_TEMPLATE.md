@@ -15,4 +15,4 @@
 # その他
 <その他、特記すべき事項を記述>
 
-Closes #xxx, #yyy <Closeするissue番号を記入,複数可>
+closed #xxx, #yyy <Closeするissue番号を記入,複数可>
