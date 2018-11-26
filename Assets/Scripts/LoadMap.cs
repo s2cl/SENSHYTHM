@@ -38,9 +38,9 @@ public class LoadMap : MonoBehaviour {
 			GameObject obj = Instantiate (prefab, position, Quaternion.identity);
 			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[int.Parse(csvDatas[i][2])];
 		}
-
-		
-		
+        AudioClip song = Resources.Load<AudioClip>("Songs/audio");
+        AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+        audioSource.PlayOneShot(song);
 
 
 	}
