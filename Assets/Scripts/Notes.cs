@@ -23,8 +23,10 @@ public class Notes : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-		this.transform.position = new Vector3(x, y-Time.time*5 -4);
-		float judgetime = y-Time.time*5;
+        float judgeLine = 4;
+        float speed = 0.5f;
+        this.transform.position = new Vector3(x, y-Time.time*speed - judgeLine);
+		float judgetime = y-Time.time*speed;
 
 		// 判定後だったら
 		if (judgetime < -2){
@@ -32,22 +34,22 @@ public class Notes : MonoBehaviour {
 			Destroy(this.gameObject);
 		}
 		// 判定前だったら
-		else if (judgetime > 0.15){
+		else if (judgetime > 0.15 * speed){
 		}
 
 		else if (Input.GetKeyDown("s") || Input.GetKeyDown("l")){
             audioSource.PlayOneShot(song);
             // perfect
-            if (judgetime <= 0.02 && judgetime >= -0.02 ){
+            if (judgetime <= 0.02 * speed && judgetime >= -0.02*speed ){
 				Debug.Log("Perfect!");
 			}
-			else if (judgetime <= 0.04 && judgetime >= -0.04 ){
+			else if (judgetime <= 0.04 * speed && judgetime >= -0.04*speed ){
 				Debug.Log("Great");
 			}
-			else if (judgetime <= 0.105 && judgetime >= -0.105 ){
+			else if (judgetime <= 0.105 * speed && judgetime >= -0.105 * speed ){
 				Debug.Log("good");
 			}
-			else if (judgetime <= 0.150 && judgetime >= -0.150 ){
+			else if (judgetime <= 0.15 * speed && judgetime >= -0.15 * speed ){
 				Debug.Log("bad...");
 			}
 			else{

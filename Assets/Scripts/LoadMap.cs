@@ -29,12 +29,13 @@ public class LoadMap : MonoBehaviour {
 		for (int i=0;i<9;i++){
 			spriteImages[i] = Resources.Load("Skins/default/note" + i.ToString() , typeof(Sprite)) as Sprite;
 		}
-
+        float offset = 2;
+        float speed = 0.5f;
 		for (int i=0;i<csvDatas.Count;i++){
 			
 			Debug.Log(csvDatas[i][0]);
 			// プレハブからインスタンスを生成
-			Vector3 position = new Vector3(float.Parse(csvDatas[i][1])*2, float.Parse(csvDatas[i][0])*5);
+			Vector3 position = new Vector3(float.Parse(csvDatas[i][1])*2, float.Parse(csvDatas[i][0])*speed + offset);
 			GameObject obj = Instantiate (prefab, position, Quaternion.identity);
 			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[int.Parse(csvDatas[i][2])];
 		}
