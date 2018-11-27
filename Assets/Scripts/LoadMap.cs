@@ -4,9 +4,17 @@ using UnityEngine;
 using System.IO;
 
 public class LoadMap : MonoBehaviour {
+	// Map Info
 	TextAsset csvFile; // CSVファイル
 	public static AudioSource Music;
 	public static float speed = 5.0f;
+	public static float bpm = 180;
+	public static float offset = 2;
+
+	// User Setting
+	public static float judgeLine = 4f;
+
+
 	public bool playFlag = false;
    	List<string[]> csvDatas = new List<string[]>(); // CSVの中身を入れるリスト;
 
@@ -32,16 +40,22 @@ public class LoadMap : MonoBehaviour {
 			spriteImages[i] = Resources.Load("Skins/default/note" + i.ToString() , typeof(Sprite)) as Sprite;
 		}
 
-        float offset = 2;
-		
+		// notesを生成
 		for (int i=0;i<csvDatas.Count;i++){
-			
-			Debug.Log(csvDatas[i][0]);
 			// プレハブからインスタンスを生成
 			Vector3 position = new Vector3(float.Parse(csvDatas[i][1])*2, float.Parse(csvDatas[i][0]) + offset);
 			GameObject obj = Instantiate(prefab, position, Quaternion.identity);
 			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[int.Parse(csvDatas[i][2])];
 		}
+
+		// lineを生成
+		GameObject barline = (GameObject)Resources.Load("Prefabs/BarLine");
+		for (int i=1;i<202;i+=4){
+			Vector3 position = new Vector3(0, 60/bpm*i + offset);
+			GameObject obj = Instantiate(barline, position, Quaternion.identity);
+		}
+
+		// line barを生成
 
         AudioClip song = Resources.Load<AudioClip>("Songs/audio");
         Music = gameObject.GetComponent<AudioSource>();
