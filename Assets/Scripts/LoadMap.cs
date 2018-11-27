@@ -5,11 +5,13 @@ using System.IO;
 
 public class LoadMap : MonoBehaviour {
 	TextAsset csvFile; // CSVファイル
+	public static AudioSource Music;
+	public static float speed = 5.0f;
+	public bool playFlag = false;
    	List<string[]> csvDatas = new List<string[]>(); // CSVの中身を入れるリスト;
 
 	// Use this for initialization
 	void Start () {
-
 		csvFile = Resources.Load("test") as TextAsset; // Resouces下のCSV読み込み
         StringReader reader = new StringReader(csvFile.text);
 
@@ -29,25 +31,46 @@ public class LoadMap : MonoBehaviour {
 		for (int i=0;i<9;i++){
 			spriteImages[i] = Resources.Load("Skins/default/note" + i.ToString() , typeof(Sprite)) as Sprite;
 		}
+
         float offset = 2;
-        float speed = 0.5f;
+		
 		for (int i=0;i<csvDatas.Count;i++){
 			
 			Debug.Log(csvDatas[i][0]);
 			// プレハブからインスタンスを生成
-			Vector3 position = new Vector3(float.Parse(csvDatas[i][1])*2, float.Parse(csvDatas[i][0])*speed + offset);
-			GameObject obj = Instantiate (prefab, position, Quaternion.identity);
+			Vector3 position = new Vector3(float.Parse(csvDatas[i][1])*2, float.Parse(csvDatas[i][0]) + offset);
+			GameObject obj = Instantiate(prefab, position, Quaternion.identity);
 			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[int.Parse(csvDatas[i][2])];
 		}
-        AudioClip song = Resources.Load<AudioClip>("Songs/audio");
-        AudioSource audioSource = gameObject.GetComponent<AudioSource>();
-        audioSource.PlayOneShot(song);
 
+        AudioClip song = Resources.Load<AudioClip>("Songs/audio");
+        Music = gameObject.GetComponent<AudioSource>();
+		Music.clip = song;
+        Music.Play();
+		playFlag = true;
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+		if (Input.GetKeyDown(KeyCode.Escape)){
+			if (playFlag){
+				Music.Pause();
+				playFlag = false;
+			}
+			else {
+				Music.UnPause();
+				playFlag = true;
+			}
+		}
+		if (Input.GetKeyDown(KeyCode.F3)){
+			speed += 0.2f;
+		}
+		else if (Input.GetKeyDown(KeyCode.F4)){
+			speed -= 0.2f;
+		}
+
+
 	}
 }
