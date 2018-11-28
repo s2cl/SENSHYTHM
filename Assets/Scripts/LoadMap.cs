@@ -106,7 +106,7 @@ public class LoadMap : MonoBehaviour {
 		GameObject[] notes = GameObject.FindGameObjectsWithTag("judgenotes");
 
 		if (notes.Length!=0){
-			circle.transform.position = new Vector3(notes[0].transform.position.x, -judgeLine);
+			circle.transform.position = new Vector3(notes[0].transform.position.x, -judgeLine, 0.5f);
 
 			for (int i=0;i<9;i++){
 				if (Input.GetKeyDown(leftKeybind[i])) {keydownset.Add("left_note"+i.ToString());}
