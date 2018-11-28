@@ -4,21 +4,18 @@ using UnityEngine;
 
 public class Notes : MonoBehaviour {
 	private GameObject note;
-	float x,y,z;
+	public float x,y;
+	public int notetype;
 
-    AudioClip song;
-    AudioSource audioSource;
+    public AudioClip song;
+    public AudioSource audioSource;
 
     // Use this for initialization
     void Start () {
-		//note = GameObject.Find("/prehab/note.prehab");
 		x = this.transform.position.x;
 		y = this.transform.position.y;
         song = Resources.Load<AudioClip>("Songs/hitclap");
         audioSource = gameObject.GetComponent<AudioSource>();
-
-
-        //z = 0;
     }
 
     // Update is called once per frame
@@ -26,42 +23,25 @@ public class Notes : MonoBehaviour {
         float judgeLine = LoadMap.judgeLine;
         float speed = LoadMap.speed;
 		float nowtime = LoadMap.Music.time;
-
         this.transform.position = new Vector3(x, y*speed - nowtime*speed - judgeLine);
 		float judgetime = y - nowtime;
 
 		// 判定後だったら
-		if (judgetime < -2){
+		if (judgetime < -0.2){
 			Debug.Log("poor");
 			Destroy(this.gameObject);
 		}
 		// 判定前だったら
-		else if (judgetime > 0.15){
+		else if (judgetime < 0.2){
+			this.tag = "judgenotes";
 		}
 
-		else if (Input.GetKeyDown("s") || Input.GetKeyDown("l")){
-            audioSource.PlayOneShot(song);
-            // perfect
-            if (judgetime <= 0.02 && judgetime >= -0.02){
-				Debug.Log("Perfect!");
-			}
-			else if (judgetime <= 0.04 && judgetime >= -0.04){
-				Debug.Log("Great");
-			}
-			else if (judgetime <= 0.105 && judgetime >= -0.105){
-				Debug.Log("good");
-			}
-			else if (judgetime <= 0.15 && judgetime >= -0.15){
-				Debug.Log("bad...");
-			}
-			else{
-				Debug.Log("poor");
-			}
-            StartCoroutine("DestroyNote");
+	} 
 
-		}
-
+	public void typeset(int ntype){
+		notetype = ntype;
 	}
+	
 
     IEnumerator DestroyNote(){
         yield return new WaitForSeconds(0.1f);

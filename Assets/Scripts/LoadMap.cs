@@ -7,17 +7,22 @@ public class LoadMap : MonoBehaviour {
 	// Map Info
 	TextAsset csvFile; // CSVファイル
 	public static AudioSource Music;
-	public static float speed = 5.0f;
+	public static float speed = 13.0f;
 	public static float bpm = 180;
-	public static float offset = 2;
+	public static float offset = 0.68f;
 
 	// User Setting
 	public static float judgeLine = 4f;
+	//List<string> leftKeybind = new List<string>{"s","w","e","d","c","x","z","a","q"};
+	//List<string> rightKeybind = new List<string>{"h","y","u","j","m","n","b","g","t"};
+	List<string> leftKeybind = new List<string>{"s","s","s","s","s","s","s","s","s"};
+	List<string> rightKeybind = new List<string>{"l","l","l","l","l","l","l","l","l"};
 
 
 	public bool playFlag = false;
    	List<string[]> csvDatas = new List<string[]>(); // CSVの中身を入れるリスト;
 
+	 GameObject circle;
 	// Use this for initialization
 	void Start () {
 		csvFile = Resources.Load("test") as TextAsset; // Resouces下のCSV読み込み
@@ -43,9 +48,11 @@ public class LoadMap : MonoBehaviour {
 		// notesを生成
 		for (int i=0;i<csvDatas.Count;i++){
 			// プレハブからインスタンスを生成
-			Vector3 position = new Vector3(float.Parse(csvDatas[i][1])*2, float.Parse(csvDatas[i][0]) + offset);
+			Vector3 position = new Vector3(float.Parse(csvDatas[i][1]), float.Parse(csvDatas[i][0]) + offset);
 			GameObject obj = Instantiate(prefab, position, Quaternion.identity);
 			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[int.Parse(csvDatas[i][2])];
+			obj.GetComponent<Notes>().typeset(int.Parse(csvDatas[i][2]));
+
 		}
 
 		// lineを生成
@@ -55,19 +62,27 @@ public class LoadMap : MonoBehaviour {
 			GameObject obj = Instantiate(barline, position, Quaternion.identity);
 		}
 
-		// line barを生成
-
+		// 曲を再生
         AudioClip song = Resources.Load<AudioClip>("Songs/audio");
         Music = gameObject.GetComponent<AudioSource>();
 		Music.clip = song;
         Music.Play();
 		playFlag = true;
 
+		circle = Instantiate((GameObject)Resources.Load("Prefabs/Circle"), new Vector3(0, -judgeLine), Quaternion.identity);
+		Sprite circleImage = Resources.Load("Skins/default/circle0", typeof(Sprite)) as Sprite;
+		circle.GetComponent<SpriteRenderer>().sprite = circleImage;
+
 	}
-	
+
+
 	// Update is called once per frame
 	void Update () {
 
+		// 押したキーを格納するset
+		HashSet<string> keydownset = new HashSet<string>();
+
+		// 一時停止
 		if (Input.GetKeyDown(KeyCode.Escape)){
 			if (playFlag){
 				Music.Pause();
@@ -78,12 +93,65 @@ public class LoadMap : MonoBehaviour {
 				playFlag = true;
 			}
 		}
+
+		// ハイスピ
 		if (Input.GetKeyDown(KeyCode.F3)){
 			speed += 0.2f;
 		}
 		else if (Input.GetKeyDown(KeyCode.F4)){
 			speed -= 0.2f;
 		}
+
+		// 判定
+		GameObject[] notes = GameObject.FindGameObjectsWithTag("judgenotes");
+
+		if (notes.Length!=0){
+			circle.transform.position = new Vector3(notes[0].transform.position.x, -judgeLine);
+
+			for (int i=0;i<9;i++){
+				if (Input.GetKeyDown(leftKeybind[i])) {keydownset.Add("left_note"+i.ToString());}
+				if (Input.GetKeyDown(rightKeybind[i])) keydownset.Add("right_note"+i.ToString());
+			}
+
+			foreach(GameObject i in notes){
+				Notes note = i.GetComponent<Notes>();
+				bool judgeflag = false;
+				if (keydownset.Remove("left_note" + note.notetype.ToString())){
+					note.audioSource.PlayOneShot(note.song,1f);
+					judgeflag = true;
+				}
+				else if (keydownset.Remove("right_note" + note.notetype.ToString())){
+					note.audioSource.PlayOneShot(note.song,1f);
+					judgeflag = true;
+				}
+
+				if (judgeflag){
+
+					float judgetime = note.y - Music.time;
+
+					if (judgetime <= 0.02 && judgetime >= -0.02){
+					Debug.Log("Perfect!");
+					}
+					else if (judgetime <= 0.04 && judgetime >= -0.04){
+						Debug.Log("Great");
+					}
+					else if (judgetime <= 0.105 && judgetime >= -0.105){
+						Debug.Log("good");
+					}
+					else if (judgetime <= 0.15 && judgetime >= -0.15){
+						Debug.Log("bad...");
+					}
+					else{
+						Debug.Log("poor");
+					}
+					
+					Destroy(i);
+				}
+			}
+		}
+
+		
+		
 
 
 	}
