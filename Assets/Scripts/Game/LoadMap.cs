@@ -52,6 +52,7 @@ public class LoadMap : MonoBehaviour {
 			GameObject obj = Instantiate(prefab, position, Quaternion.identity);
 			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[int.Parse(csvDatas[i][2])];
 			obj.GetComponent<Notes>().typeset(int.Parse(csvDatas[i][2]));
+			obj.name = "note " + csvDatas[i][0];
 
 		}
 
@@ -60,6 +61,7 @@ public class LoadMap : MonoBehaviour {
 		for (int i=1;i<202;i+=4){
 			Vector3 position = new Vector3(0, 60/bpm*i + offset);
 			GameObject obj = Instantiate(barline, position, Quaternion.identity);
+			obj.name = "bar " + (60/bpm*i).ToString();
 		}
 
 		// 曲を再生
