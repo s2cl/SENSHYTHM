@@ -2,7 +2,7 @@
     "Username" : "nanashi",
     "Highspeed" : 12.4,
     "UserOffset": 0.0,
+    "judgeLine": 4.0,
     "LeftKeybind": ["s","s","s","s","s","s","s","s","s"],
-    "RightKeybind":["l","l","l","l","l","l","l","l","l"],
-    "judgeLine": 4.0
+    "RightKeybind":["l","l","l","l","l","l","l","l","l"]
 }

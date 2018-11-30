@@ -11,11 +11,9 @@ public class BarLine : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		float judgeLine = LoadMap.judgeLine;
-        float speed = LoadMap.speed;
 		float nowtime = LoadMap.Music.time;
 
-		this.transform.position = new Vector3(0, y*speed - nowtime*speed - judgeLine, 1);
+		this.transform.position = new Vector3(0, y*Setting.Highspeed - nowtime*Setting.Highspeed - Setting.judgeLine, 1);
 		if (y - nowtime < -2){
 			Destroy(this.gameObject);
 		}

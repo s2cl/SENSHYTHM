@@ -20,8 +20,9 @@ public class Notes : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        float judgeLine = LoadMap.judgeLine;
-        float speed = LoadMap.speed;
+		float speed = Setting.Highspeed;
+
+        float judgeLine = Setting.judgeLine;
 		float nowtime = LoadMap.Music.time;
         this.transform.position = new Vector3(x, y*speed - nowtime*speed - judgeLine);
 		float judgetime = y - nowtime;

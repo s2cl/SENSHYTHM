@@ -7,22 +7,22 @@ public class LoadMap : MonoBehaviour {
 	// Map Info
 	TextAsset csvFile; // CSVファイル
 	public static AudioSource Music;
-	public static float speed = 13.0f;
-	public static float bpm = 180;
-	public static float offset = 0.68f;
+	
+	public static float bpm = 180; //mapparam
+	public static float offset = 0.68f; //mapparam.offset
 
 	// User Setting
-	public static float judgeLine = 4f;
-	//List<string> leftKeybind = new List<string>{"s","w","e","d","c","x","z","a","q"};
-	//List<string> rightKeybind = new List<string>{"h","y","u","j","m","n","b","g","t"};
-	List<string> leftKeybind = new List<string>{"s","s","s","s","s","s","s","s","s"};
-	List<string> rightKeybind = new List<string>{"l","l","l","l","l","l","l","l","l"};
+	float speed = Setting.Highspeed;
 
+	//List<string> leftKeybind = new List<string>(Setting.LeftKeybind);
+	//List<string> rightKeybind = new List<string>(Setting.RightKeybind);
 
 	public bool playFlag = false;
    	List<string[]> csvDatas = new List<string[]>(); // CSVの中身を入れるリスト;
 
-	 GameObject circle;
+	GameObject circle;
+
+	
 	// Use this for initialization
 	void Start () {
 		csvFile = Resources.Load("test") as TextAsset; // Resouces下のCSV読み込み
@@ -68,13 +68,13 @@ public class LoadMap : MonoBehaviour {
         AudioClip song = Resources.Load<AudioClip>("Songs/audio");
         Music = gameObject.GetComponent<AudioSource>();
 		Music.clip = song;
-        Music.Play();
-		playFlag = true;
-
-		circle = Instantiate((GameObject)Resources.Load("Prefabs/Circle"), new Vector3(0, -judgeLine), Quaternion.identity);
+        
+		circle = Instantiate((GameObject)Resources.Load("Prefabs/Circle"), new Vector3(0, -Setting.judgeLine), Quaternion.identity);
 		Sprite circleImage = Resources.Load("Skins/default/circle0", typeof(Sprite)) as Sprite;
 		circle.GetComponent<SpriteRenderer>().sprite = circleImage;
 
+		playFlag = true;
+		Music.Play();
 	}
 
 
@@ -98,21 +98,21 @@ public class LoadMap : MonoBehaviour {
 
 		// ハイスピ
 		if (Input.GetKeyDown(KeyCode.F3)){
-			speed += 0.2f;
+			Setting.Highspeed += 0.2f;
 		}
 		else if (Input.GetKeyDown(KeyCode.F4)){
-			speed -= 0.2f;
+			Setting.Highspeed -= 0.2f;
 		}
 
 		// 判定
 		GameObject[] notes = GameObject.FindGameObjectsWithTag("judgenotes");
 
 		if (notes.Length!=0){
-			circle.transform.position = new Vector3(notes[0].transform.position.x, -judgeLine, 0.5f);
+			circle.transform.position = new Vector3(notes[0].transform.position.x, -Setting.judgeLine, 0.5f);
 
 			for (int i=0;i<9;i++){
-				if (Input.GetKeyDown(leftKeybind[i])) {keydownset.Add("left_note"+i.ToString());}
-				if (Input.GetKeyDown(rightKeybind[i])) keydownset.Add("right_note"+i.ToString());
+				if (Input.GetKeyDown(Setting.LeftKeybind[i])) keydownset.Add("left_note"+i.ToString());
+				if (Input.GetKeyDown(Setting.RightKeybind[i])) keydownset.Add("right_note"+i.ToString());
 			}
 
 			foreach(GameObject i in notes){

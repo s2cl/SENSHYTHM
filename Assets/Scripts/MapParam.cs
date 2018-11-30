@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 
 [System.Serializable]
 public class Note
 {
-    public double time;
+    public float time;
     public int lane;
     public int type;
 }
@@ -22,7 +21,7 @@ public class MapParam {
     public string Diffname;
     public int Length;
     public int BPM;
-    public double Offset;
+    public float Offset;
     public List<Note> Notes;
 
     public static MapParam ReadFromJSON(string jsonString){

@@ -22,12 +22,10 @@ public class LoadSongs : MonoBehaviour {
 
 			WWW tmp = new WWW(mappath);
 			MapParam mapdata = MapParam.ReadFromJSON(tmp.text);
-			Debug.Log("mapinfo");
-			Debug.Log(mapdata.Site);
-			Debug.Log(mapdata.Artist);
-			Debug.Log(mapdata.CreaterId);
-			foreach(Note i in mapdata.Notes)
-			Debug.Log(i.time);
+
+			foreach(Note i in mapdata.Notes){
+				// notes
+			}
 
 			Vector3 position = new Vector3(0,pos,0);
 			GameObject obj = Instantiate(songprefab, position, Quaternion.identity);
