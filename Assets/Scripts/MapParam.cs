@@ -8,12 +8,15 @@ public class Note
     public float time;
     public int lane;
     public int type;
+
 }
 
 [System.Serializable]
 public class MapParam {
     public string Site;
     public string Audio;
+    public string Video;
+    public string ext;
     public string Title;
     public string Artist;
     public string Creator;

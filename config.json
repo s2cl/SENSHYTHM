@@ -3,6 +3,6 @@
     "Highspeed" : 12.4,
     "UserOffset": 0.0,
     "judgeLine": 4.0,
-    "LeftKeybind": ["s","s","s","s","s","s","s","s","s"],
-    "RightKeybind":["l","l","l","l","l","l","l","l","l"]
+    "LeftKeybind": ["s","w","e","d","c","x","z","a","q"],
+    "RightKeybind":["h","y","u","j","m","n","b","g","t"]
 }

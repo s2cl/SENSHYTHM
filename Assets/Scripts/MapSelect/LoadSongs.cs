@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class LoadSongs : MonoBehaviour {
 	public GameObject canvas;
@@ -23,10 +24,6 @@ public class LoadSongs : MonoBehaviour {
 			WWW tmp = new WWW(mappath);
 			MapParam mapdata = MapParam.ReadFromJSON(tmp.text);
 
-			foreach(Note i in mapdata.Notes){
-				// notes
-			}
-
 			Vector3 position = new Vector3(0,pos,0);
 			GameObject obj = Instantiate(songprefab, position, Quaternion.identity);
 			obj.name = f.Name;
@@ -40,6 +37,10 @@ public class LoadSongs : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKeyDown(KeyCode.Space)){
+			Selected.Set("Natori Sana - Wakusei Loop [muzui].json");
+			SceneManager.LoadScene("Game");
+		}
 		
 	}
 }

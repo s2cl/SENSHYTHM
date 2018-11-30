@@ -16,15 +16,13 @@ public class Notes : MonoBehaviour {
 		y = this.transform.position.y;
         song = Resources.Load<AudioClip>("Songs/hitclap");
         audioSource = gameObject.GetComponent<AudioSource>();
+		audioSource.clip = song;
     }
 
     // Update is called once per frame
     void Update () {
-		float speed = Setting.Highspeed;
-
-        float judgeLine = Setting.judgeLine;
-		float nowtime = LoadMap.Music.time;
-        this.transform.position = new Vector3(x, y*speed - nowtime*speed - judgeLine);
+		float nowtime = (float)LoadMap.Music.time;
+        this.transform.position = new Vector3(x, y*Setting.Highspeed - nowtime*Setting.Highspeed - Setting.judgeLine + Selected.Offset + Setting.UserOffset);
 		float judgetime = y - nowtime;
 
 		// 判定後だったら
