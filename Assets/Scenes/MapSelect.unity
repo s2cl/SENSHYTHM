@@ -414,6 +414,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   songlist: {fileID: 0}
+  btn: {fileID: 0}
 --- !u!1 &1387783914
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,7 +530,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1613889497}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -624,7 +625,7 @@ MonoBehaviour:
   m_Script: {fileID: 1367256648, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Content: {fileID: 0}
+  m_Content: {fileID: 788287098}
   m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 2
