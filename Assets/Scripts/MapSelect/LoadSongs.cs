@@ -15,11 +15,11 @@ public class LoadSongs : MonoBehaviour {
 
 		canvas.GetComponent<Canvas>().worldCamera = Camera.main;
 		GameObject songprefab = (GameObject)Resources.Load("Prefabs/MapSelect/SongText");
-		DirectoryInfo dir = new DirectoryInfo(Application.dataPath+"/../Songs/map");
+		DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath + "/Songs/map");
 		FileInfo[] info = dir.GetFiles("*.json");
 		float pos = 0f;
 		foreach(FileInfo f in info){
-			string mappath = "file://" + Application.dataPath + "/../Songs/map/" + f.Name;
+			string mappath = "file://" + Application.persistentDataPath + "/Songs/map/" + f.Name;
 
 			WWW tmp = new WWW(mappath);
 			MapParam mapdata = MapParam.ReadFromJSON(tmp.text);
