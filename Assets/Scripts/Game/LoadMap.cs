@@ -48,12 +48,7 @@ public class LoadMap : MonoBehaviour {
 		}
 
 		// lineを生成
-		GameObject barline = (GameObject)Resources.Load("Prefabs/BarLine");
-		for (int i=1;i<202;i+=4){
-			Vector3 position = new Vector3(0, 60/mapBPM*i);
-			GameObject obj = Instantiate(barline, position, Quaternion.identity);
-			obj.name = "bar " + (60/mapBPM*i).ToString();
-		}
+		CreateBarLine(Selected.Length,mapBPM);
 
 		//circle
 		circle = Instantiate((GameObject)Resources.Load("Prefabs/Circle"), new Vector3(0, -Setting.judgeLine), Quaternion.identity);
@@ -82,6 +77,18 @@ public class LoadMap : MonoBehaviour {
 		Music.Play();
 		vp.Play();
 	}
+
+	// lineを生成
+	void CreateBarLine(float length, float bpm){
+		GameObject barline = (GameObject)Resources.Load("Prefabs/BarLine");
+		for (int i=1; i<length; i+=4){
+			Vector3 position = new Vector3(0, 60 * i / bpm);
+			GameObject obj = Instantiate(barline, position, Quaternion.identity);
+			obj.name = "bar " + (60 * i / bpm).ToString();
+		}
+	}
+
+
 
 
 	// Update is called once per frame
