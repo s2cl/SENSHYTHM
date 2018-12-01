@@ -26,28 +26,12 @@ public class LoadMap : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		// プレハブを取得
-		GameObject prefab = (GameObject)Resources.Load("Prefabs/note");
-		Sprite[] spriteImages = new Sprite[9];
-		for (int i=0;i<9;i++){
-			spriteImages[i] = Resources.Load("Skins/default/note" + i.ToString() , typeof(Sprite)) as Sprite;
-		}
 
 		// map情報を読み込み
-
 		mapBPM = Selected.BPM;
 
-		// notesを生成
-		foreach(Note i in Selected.Notes){
-			// プレハブからインスタンスを生成
-			Vector3 position = new Vector3(i.lane, i.time );
-			GameObject obj = Instantiate(prefab, position, Quaternion.identity);
-			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[i.type];
-			obj.GetComponent<Notes>().typeset(i.type);
-			obj.name = "note " + i.time.ToString();
-		}
+		CreateNotes(Selected.Notes);
 
-		// lineを生成
 		CreateBarLine(Selected.Length,mapBPM);
 
 		//circle
@@ -55,11 +39,9 @@ public class LoadMap : MonoBehaviour {
 		Sprite circleImage = Resources.Load("Skins/default/circle0", typeof(Sprite)) as Sprite;
 		circle.GetComponent<SpriteRenderer>().sprite = circleImage;
 
-
 		// 動画設定
-		GameObject Video_Player = GameObject.Find("Video Player");
-		vp = Video_Player.GetComponent<VideoPlayer>();
-		vp.url = Application.persistentDataPath + "/Songs/music/" + Selected.Video;
+		vp = LoadVideo(Selected.Video);
+		
 		
 		// 音楽設定
 		Music = this.GetComponent<AudioSource> ();
@@ -78,6 +60,24 @@ public class LoadMap : MonoBehaviour {
 		vp.Play();
 	}
 
+	// notesを生成
+	void CreateNotes(List<Note> notes){
+		// プレハブを取得
+		GameObject prefab = (GameObject)Resources.Load("Prefabs/note");
+		Sprite[] spriteImages = new Sprite[9];
+		for (int i=0;i<9;i++){
+			spriteImages[i] = Resources.Load("Skins/default/note" + i.ToString() , typeof(Sprite)) as Sprite;
+		}
+		foreach(Note i in notes){
+			// プレハブからインスタンスを生成
+			Vector3 position = new Vector3(i.lane, i.time );
+			GameObject obj = Instantiate(prefab, position, Quaternion.identity);
+			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[i.type];
+			obj.GetComponent<Notes>().typeset(i.type);
+			obj.name = "note " + i.time.ToString();
+		}	
+	}
+
 	// lineを生成
 	void CreateBarLine(float length, float bpm){
 		GameObject barline = (GameObject)Resources.Load("Prefabs/BarLine");
@@ -86,6 +86,12 @@ public class LoadMap : MonoBehaviour {
 			GameObject obj = Instantiate(barline, position, Quaternion.identity);
 			obj.name = "bar " + (60 * i / bpm).ToString();
 		}
+	}
+
+	VideoPlayer LoadVideo(string file_name){
+		VideoPlayer Video_Player = GameObject.Find("Video Player").GetComponent<VideoPlayer>();
+		Video_Player.url = Application.persistentDataPath + "/Songs/music/" + file_name;
+		return Video_Player;
 	}
 
 
