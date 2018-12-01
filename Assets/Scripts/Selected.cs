@@ -13,8 +13,8 @@ public class Selected{
 	public static string Creator;
 	public static int CreaterId;
 	public static string Diffname;
-	public static int Length;
-	public static int BPM;
+	public static float Length;
+	public static float BPM;
 	public static float Offset;
 	public static List<Note> Notes;
 
