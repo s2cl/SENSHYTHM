@@ -1,7 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 using System.IO;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using UnityEngine;
 using UnityEngine.Video;
 
 public class LoadMap : MonoBehaviour {
@@ -25,10 +29,16 @@ public class LoadMap : MonoBehaviour {
 
 	
 	// Use this for initialization
-	void Start () {
+	async void Start () {
 
 		// map情報を読み込み
 		mapBPM = Selected.BPM;
+
+		// 動画設定
+		vp = LoadVideo(Selected.Video);
+		
+		// 音楽設定
+		Music = await LoadMusic(Selected.Audio);
 
 		CreateNotes(Selected.Notes);
 
@@ -39,20 +49,6 @@ public class LoadMap : MonoBehaviour {
 		Sprite circleImage = Resources.Load("Skins/default/circle0", typeof(Sprite)) as Sprite;
 		circle.GetComponent<SpriteRenderer>().sprite = circleImage;
 
-		// 動画設定
-		vp = LoadVideo(Selected.Video);
-		
-		
-		// 音楽設定
-		Music = this.GetComponent<AudioSource> ();
-		//Music.clip = (AudioClip)Resources.Load("Songs/music/"+Selected.Audio);
-		Debug.Log("file://" + Application.persistentDataPath + "/Songs/music/" + Selected.Audio);
-		WWW www = new WWW("file://" + Application.persistentDataPath + "/Songs/music/" + Selected.Audio);
-		Debug.Log("www");
-		Debug.Log(www.bytes);
-		Music.clip = www.GetAudioClip(false,false);
-		Debug.Log("aaa:"+Selected.path);
-		Debug.Log(Music.clip.length);
 		
 		playFlag = true;
 
@@ -92,6 +88,14 @@ public class LoadMap : MonoBehaviour {
 		VideoPlayer Video_Player = GameObject.Find("Video Player").GetComponent<VideoPlayer>();
 		Video_Player.url = Application.persistentDataPath + "/Songs/music/" + file_name;
 		return Video_Player;
+	}
+
+
+	async Task<AudioSource> LoadMusic(string file_name){
+		AudioSource audioSource = this.gameObject.GetComponent<AudioSource> ();
+		WWW www = await new WWW("file://" + Application.persistentDataPath + "/Songs/music/" + file_name);
+		audioSource.clip = www.GetAudioClip(false,false);
+		return audioSource;
 	}
 
 
