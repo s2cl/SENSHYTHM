@@ -26,6 +26,7 @@ public class LoadMap : MonoBehaviour {
 	public bool playFlag = false;
 
 	private float startDelayTime = 5.0f;
+	private bool start = false;
 
 	GameObject circle;
 
@@ -38,9 +39,13 @@ public class LoadMap : MonoBehaviour {
 
 		// 動画設定
 		vp = LoadVideo(Selected.Video);
+		vp.Play();
+		vp.Pause();
 		
 		// 音楽設定
+		enabled = false; // Startのコルーチン完了後にUpdate処理を開始するために必要
 		Music = await LoadMusic(Selected.Audio);
+		enabled = true;
 
 		CreateNotes(Selected.Notes);
 
@@ -52,7 +57,6 @@ public class LoadMap : MonoBehaviour {
 		circle.GetComponent<SpriteRenderer>().sprite = circleImage;
 
 		playFlag = true;
-		vp.Play();
 		Music.Play();
 	}
 
@@ -125,6 +129,10 @@ public class LoadMap : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+		if(!start && Music.time >= startDelayTime){
+			start = true;
+			vp.Play();
+		}
 
 		// 押したキーを格納するset
 		HashSet<string> keydownset = new HashSet<string>();
@@ -134,13 +142,15 @@ public class LoadMap : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Escape)){
 			if (playFlag){
 				Music.Pause();
-				vp.Pause();
+				if(start) vp.Pause();
 				playFlag = false;
 			}
 			else {
-				vp.time = Music.time;
+				if(start){
+					vp.time = Music.time - startDelayTime;
+					vp.Play();
+				}
 				Music.Play();
-				vp.Play();
 				playFlag = true;
 			}
 		}
