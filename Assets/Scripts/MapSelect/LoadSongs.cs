@@ -3,44 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
-using UnityEngine.SceneManagement;
+
 
 public class LoadSongs : MonoBehaviour {
-	public GameObject canvas;
+	public GameObject songlist;
+	public Button btn;
+
 	// Use this for initialization
 	void Start () {
 		// canvas 作成
 	
-		canvas = Instantiate((GameObject)Resources.Load("Prefabs/MapSelect/Canvas"), new Vector3(0,0,0), Quaternion.identity);
+		songlist = GameObject.Find("SongButton");
 
-		canvas.GetComponent<Canvas>().worldCamera = Camera.main;
-		GameObject songprefab = (GameObject)Resources.Load("Prefabs/MapSelect/SongText");
+		GameObject button = (GameObject)Resources.Load("Prefabs/MapSelect/Button");
 		DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath + "/Songs/map");
 		FileInfo[] info = dir.GetFiles("*.json");
-		float pos = 0f;
+
 		foreach(FileInfo f in info){
 			string mappath = "file://" + Application.persistentDataPath + "/Songs/map/" + f.Name;
-
 			WWW tmp = new WWW(mappath);
 			MapParam mapdata = MapParam.ReadFromJSON(tmp.text);
 
-			Vector3 position = new Vector3(0,pos,0);
-			GameObject obj = Instantiate(songprefab, position, Quaternion.identity);
-			obj.name = f.Name;
-			obj.GetComponent<Text>().text = mapdata.Title +"\n"+
-											mapdata.Artist + " // " + mapdata.Creator + "\n" + 
-											mapdata.Diffname;
-			obj.transform.SetParent(canvas.transform, false);
-			pos-= 180;
+			GameObject ButtonObj = Instantiate(button, new Vector3(), Quaternion.identity);
+			ButtonObj.transform.SetParent(songlist.transform, false);
+			ButtonObj.name = f.Name;
+			
+			btn = ButtonObj.GetComponent<Button>();
+			btn.onClick.AddListener(btn.GetComponent<GameStart>().OnClick);
+
+			GameObject title = ButtonObj.transform.Find("Title").gameObject;
+			GameObject artist = ButtonObj.transform.Find("Artist").gameObject;
+			title.GetComponent<Text>().text = mapdata.Title;
+			artist.GetComponent<Text>().text= mapdata.Artist;
+
         }
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (Input.GetKeyDown(KeyCode.Space)){
-			Selected.Set("Natori Sana - Wakusei Loop [muzui].json");
-			SceneManager.LoadScene("Game");
-		}
-		
-	}
+
 }
