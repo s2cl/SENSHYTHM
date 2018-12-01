@@ -64,8 +64,7 @@ public class LoadMap : MonoBehaviour {
 		// 動画設定
 		GameObject Video_Player = GameObject.Find("Video Player");
 		vp = Video_Player.GetComponent<VideoPlayer>();
-        //video_p.clip = new WWW("file://" + Application.dataPath + "/../Songs/audio/" + Selected.Audio).GetMovieTexture();
-		vp.url = Application.dataPath + "/../Songs/music/" + Selected.Video;
+		vp.url = Application.persistentDataPath + "/Songs/music/" + Selected.Video;
 		
 		// 音楽設定
 		Music = this.GetComponent<AudioSource> ();
