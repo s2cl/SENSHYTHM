@@ -25,6 +25,8 @@ public class LoadMap : MonoBehaviour {
 
 	public bool playFlag = false;
 
+	private float startDelayTime = 5.0f;
+
 	GameObject circle;
 
 	
@@ -49,11 +51,9 @@ public class LoadMap : MonoBehaviour {
 		Sprite circleImage = Resources.Load("Skins/default/circle0", typeof(Sprite)) as Sprite;
 		circle.GetComponent<SpriteRenderer>().sprite = circleImage;
 
-		
 		playFlag = true;
-
-		Music.Play();
 		vp.Play();
+		Music.Play();
 	}
 
 	// notesを生成
@@ -66,7 +66,7 @@ public class LoadMap : MonoBehaviour {
 		}
 		foreach(Note i in notes){
 			// プレハブからインスタンスを生成
-			Vector3 position = new Vector3(i.lane, i.time );
+			Vector3 position = new Vector3(i.lane, i.time + startDelayTime);
 			GameObject obj = Instantiate(prefab, position, Quaternion.identity);
 			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[i.type];
 			obj.GetComponent<Notes>().typeset(i.type);
@@ -77,7 +77,7 @@ public class LoadMap : MonoBehaviour {
 	// lineを生成
 	void CreateBarLine(float length, float bpm){
 		GameObject barline = (GameObject)Resources.Load("Prefabs/BarLine");
-		for (int i=1; i<length; i+=4){
+		for (int i=1; i<length + startDelayTime; i+=4){
 			Vector3 position = new Vector3(0, 60 * i / bpm);
 			GameObject obj = Instantiate(barline, position, Quaternion.identity);
 			obj.name = "bar " + (60 * i / bpm).ToString();
@@ -94,15 +94,37 @@ public class LoadMap : MonoBehaviour {
 	async Task<AudioSource> LoadMusic(string file_name){
 		AudioSource audioSource = this.gameObject.GetComponent<AudioSource> ();
 		WWW www = await new WWW("file://" + Application.persistentDataPath + "/Songs/music/" + file_name);
-		audioSource.clip = www.GetAudioClip(false,false);
+		audioSource.clip = AddSilentTime(www.GetAudioClip(false,false));
 		return audioSource;
 	}
 
 
+    AudioClip AddSilentTime(AudioClip clip)
+    {
+        if (clip == null)
+            return null;
+
+        int length = 0;
+        length += (clip.samples + (int)(clip.frequency * startDelayTime)) * clip.channels;
+        if (length == 0)
+            return null;
+
+        float[] data = new float[length];
+		float[] buffer = new float[clip.samples * clip.channels];
+		clip.GetData(buffer, 0);
+		buffer.CopyTo(data, (int)(clip.frequency * startDelayTime) * clip.channels);
+
+        AudioClip result = AudioClip.Create("Combine", length / clip.channels, clip.channels, clip.frequency, false);
+        result.SetData(data, 0);
+
+        return result;
+    }
+	
 
 
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 
 		// 押したキーを格納するset
 		HashSet<string> keydownset = new HashSet<string>();
@@ -116,6 +138,7 @@ public class LoadMap : MonoBehaviour {
 				playFlag = false;
 			}
 			else {
+				vp.time = Music.time;
 				Music.Play();
 				vp.Play();
 				playFlag = true;
@@ -193,10 +216,5 @@ public class LoadMap : MonoBehaviour {
 				}
 			}
 		}
-
-		
-		
-
-
 	}
 }
