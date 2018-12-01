@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Selected{
+
+	public static string path;
 	public static string Site;
 	public static string Audio;
 	public static string Video;
@@ -17,8 +19,8 @@ public class Selected{
 	public static List<Note> Notes;
 
 	public static void Set(string filename){
-		string configpath = "file://" + Application.dataPath + "/../Songs/map/" + filename;
-		WWW tmp = new WWW(configpath);
+		path = "file://" + Application.persistentDataPath + "/Songs/map/" + filename;
+		WWW tmp = new WWW(path);
 		MapParam param = MapParam.ReadFromJSON(tmp.text);
 		Audio  = param.Audio;
 		Video = param.Video;

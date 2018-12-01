@@ -63,15 +63,20 @@ public class LoadMap : MonoBehaviour {
 
 		// 動画設定
 		GameObject Video_Player = GameObject.Find("Video Player");
-		VideoPlayer vp = Video_Player.GetComponent<VideoPlayer>();
+		vp = Video_Player.GetComponent<VideoPlayer>();
         //video_p.clip = new WWW("file://" + Application.dataPath + "/../Songs/audio/" + Selected.Audio).GetMovieTexture();
-		vp.url = "Songs/music/" + Selected.Video;
+		vp.url = Application.dataPath + "/../Songs/music/" + Selected.Video;
 		
 		// 音楽設定
 		Music = this.GetComponent<AudioSource> ();
-		//Debug.Log("file://" + Application.dataPath + "/../Songs/audio/" + Selected.Audio);
-		//WWW www = new WWW("file://" + Application.dataPath + "/../Songs/audio/" + Selected.Audio);
-		//Music.clip = www.GetAudioClip(false);
+		//Music.clip = (AudioClip)Resources.Load("Songs/music/"+Selected.Audio);
+		Debug.Log("file://" + Application.persistentDataPath + "/Songs/music/" + Selected.Audio);
+		WWW www = new WWW("file://" + Application.persistentDataPath + "/Songs/music/" + Selected.Audio);
+		Debug.Log("www");
+		Debug.Log(www.bytes);
+		Music.clip = www.GetAudioClip(false,false);
+		Debug.Log("aaa:"+Selected.path);
+		Debug.Log(Music.clip.length);
 		
 		playFlag = true;
 
@@ -87,11 +92,11 @@ public class LoadMap : MonoBehaviour {
 		HashSet<string> keydownset = new HashSet<string>();
 
 		// 一時停止
-		/*
+		
 		if (Input.GetKeyDown(KeyCode.Escape)){
 			if (playFlag){
 				Music.Pause();
-				vp.Stop();
+				vp.Pause();
 				playFlag = false;
 			}
 			else {
@@ -99,7 +104,7 @@ public class LoadMap : MonoBehaviour {
 				vp.Play();
 				playFlag = true;
 			}
-		} */
+		}
 
 		// ハイスピ
 		if (Input.GetKeyDown(KeyCode.F3)){
