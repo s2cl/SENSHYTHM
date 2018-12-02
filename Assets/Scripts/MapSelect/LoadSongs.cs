@@ -31,7 +31,7 @@ public class LoadSongs : MonoBehaviour {
 
 			GameObject title = ButtonObj.transform.Find("Title").gameObject;
 			GameObject artist = ButtonObj.transform.Find("Artist").gameObject;
-			title.GetComponent<Text>().text = $"{mapdata.Title}";
+			title.GetComponent<Text>().text = $"{mapdata.Title} {mapdata.Length/60:D2}:{mapdata.Length%60:D2}";
 			artist.GetComponent<Text>().text= $"{mapdata.Artist} // [{mapdata.Diffname}] create by {mapdata.Creator}";
 
         }

@@ -30,7 +30,7 @@ public class MapParam {
     public string Creator;
     public int CreaterId;
     public string Diffname;
-    public float Length;
+    public int Length;
     public List<BPM> BPMs;
     public List<Note> Notes;
     
@@ -45,10 +45,7 @@ public class MapParam {
         StringReader strReader = new StringReader(tmp.text);
         string line = null;
         int readOption = 0;
-        readParam.Length = 0f;
-
-        Debug.Log(readParam.BPMs );
-        Debug.Log(path);
+        readParam.Length = 0;
 
         while(true){
             line = strReader.ReadLine();
@@ -116,7 +113,7 @@ public class MapParam {
                         case 3:
                             // read notes
                             string[] notetmp = line.Split(',');
-                            readParam.Length = System.Math.Max(readParam.Length, float.Parse(notetmp[index]));
+                            readParam.Length =  (int)System.Math.Max(readParam.Length, float.Parse(notetmp[index]));
                             break;
                         }
                     }
@@ -210,7 +207,7 @@ public class MapParam {
                         // read notes
                             Note note = new Note();
                             string[] notetmp = line.Split(',');
-                            readParam.Length = System.Math.Max(readParam.Length, float.Parse(notetmp[index]));
+                            readParam.Length = (int)System.Math.Max(readParam.Length, float.Parse(notetmp[index]));
                             note.time   = float.Parse(notetmp[index++]);
                             note.lane   = float.Parse(notetmp[index++]);
                             note.type   = int.Parse(notetmp[index++]);
@@ -226,6 +223,7 @@ public class MapParam {
                     break;
                 }
             }
+        Debug.Log(readParam.Length);
 
         return readParam;
     }

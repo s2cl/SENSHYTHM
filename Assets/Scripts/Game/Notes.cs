@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Notes : MonoBehaviour {
 	private GameObject note;
 	public float x,y;
@@ -9,14 +10,15 @@ public class Notes : MonoBehaviour {
 	public int bpmIndex;
 
     public AudioClip song;
-    public AudioSource audioSource;
+	AudioSource audioSource;
+	public bool DisplayFlag=false;
 
     // Use this for initialization
     void Start () {
 		x = this.transform.position.x;
 		y = this.transform.position.y;
         song = Resources.Load<AudioClip>("Songs/hitclap");
-        audioSource = gameObject.GetComponent<AudioSource>();
+        audioSource = this.gameObject.GetComponent<AudioSource>();
 		audioSource.clip = song;
     }
 
@@ -28,15 +30,33 @@ public class Notes : MonoBehaviour {
 
 		// 判定後だったら
 		if (judgetime < -0.2){
+			this.tag = "judgeignore";
+			this.GetComponent<Notes>().enabled = false;
+			this.GetComponent<SpriteRenderer>().enabled = false;
 			Debug.Log("poor");
-			Destroy(this.gameObject);
+			
+			//Destroy(this.gameObject);
 		}
 		// 判定前だったら
-		else if (judgetime < 0.2){
+		else if (judgetime < 0.2){			
 			this.tag = "judgenotes";
 		}
+		if (!DisplayFlag){
+			if (judgetime < 2){
+				this.GetComponent<SpriteRenderer>().enabled = true;
+				DisplayFlag = true;
+			}
+		}
 
-	} 
+
+	}
+
+	public void disable(){
+		this.tag = "judgeignore";
+		this.GetComponent<Notes>().enabled = false;
+		this.GetComponent<SpriteRenderer>().enabled = false;
+		audioSource.PlayOneShot(song, 1f);
+	}
 
 	public void typeset(int ntype){
 		notetype = ntype;

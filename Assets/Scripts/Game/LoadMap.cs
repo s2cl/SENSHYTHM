@@ -76,11 +76,11 @@ public class LoadMap : MonoBehaviour {
 		GameObject barline = (GameObject)Resources.Load("Prefabs/BarLine");
 
 		// first bar
-		GameObject fbar = Instantiate(barline, new Vector3(0,bpms[0].time), Quaternion.identity);
+		GameObject fbar = Instantiate(barline, new Vector3(0,bpms[0].time + startDelayTime), Quaternion.identity);
 		fbar.name = "first bar";
 		fbar.GetComponent<BarLine>().bpmIndex = index;
 
-		for (float bartime=bpms[0].time; bartime<(length + startDelayTime);){
+		for (float bartime=bpms[0].time+ startDelayTime; bartime<(length + startDelayTime);){
 			if ((index+1)<bpmsCount){
 				if ((bartime+(60 * 4 / bpms[index].bpm)) > bpms[index+1].time){
 					bartime = bpms[++index].time;
@@ -169,21 +169,21 @@ public class LoadMap : MonoBehaviour {
 
 		// ハイスピ
 		if (Input.GetKeyDown(KeyCode.F3)){
-			Setting.Highspeed += 0.2f;
-			Debug.Log("speed : "+ Setting.Highspeed.ToString());
+			Setting.Highspeed += 0.5f;
+			Debug.Log("Highspeed : "+ Setting.Highspeed.ToString());
 		}
 		else if (Input.GetKeyDown(KeyCode.F4)){
-			Setting.Highspeed -= 0.2f;
-			Debug.Log("speed : "+ Setting.Highspeed.ToString());
+			Setting.Highspeed -= 0.5f;
+			Debug.Log("Highspeed : "+ Setting.Highspeed.ToString());
 		}
 
 		if (Input.GetKeyDown(KeyCode.F5)){
 			Setting.UserOffset += 0.05f;
-			Debug.Log("speed : "+ Setting.UserOffset.ToString());
+			Debug.Log("UserOffset : "+ Setting.UserOffset.ToString());
 		}
 		else if (Input.GetKeyDown(KeyCode.F6)){
 			Setting.UserOffset -= 0.05f;
-			Debug.Log("speed : "+ Setting.UserOffset.ToString());
+			Debug.Log("UserOffset : "+ Setting.UserOffset.ToString());
 		}
 
 		// 判定
@@ -201,11 +201,11 @@ public class LoadMap : MonoBehaviour {
 				Notes note = i.GetComponent<Notes>();
 				bool judgeflag = false;
 				if (keydownset.Remove("left_note" + note.notetype.ToString())){
-					note.audioSource.PlayOneShot(note.song,1f);
+					note.disable();
 					judgeflag = true;
 				}
 				else if (keydownset.Remove("right_note" + note.notetype.ToString())){
-					note.audioSource.PlayOneShot(note.song,1f);
+					note.disable();
 					judgeflag = true;
 				}
 
