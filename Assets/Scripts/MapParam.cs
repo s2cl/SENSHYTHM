@@ -30,18 +30,25 @@ public class MapParam {
     public string Creator;
     public int CreaterId;
     public string Diffname;
-    public float Length = 0;
+    public float Length;
     public List<BPM> BPMs;
     public List<Note> Notes;
     
     public static MapParam ReadWithoutNotes(string filename){
         MapParam readParam = new MapParam();
+        readParam.BPMs = new List<BPM>();
+        readParam.Notes= new List<Note>();
+
         string path = Setting.SongsPath + "map/" + filename;
         Debug.Log("reading:"+path);
         WWW tmp = new WWW(path);
         StringReader strReader = new StringReader(tmp.text);
         string line = null;
         int readOption = 0;
+        readParam.Length = 0f;
+
+        Debug.Log(readParam.BPMs );
+        Debug.Log(path);
 
         while(true){
             line = strReader.ReadLine();
@@ -124,6 +131,9 @@ public class MapParam {
 
     public static MapParam ReadWithNotes(string filename){
         MapParam readParam = new MapParam();
+        readParam.BPMs = new List<BPM>();
+        readParam.Notes= new List<Note>();
+        
         string path = Setting.SongsPath + "map/" + filename;
         Debug.Log("reading:"+path);
         WWW tmp = new WWW(path);

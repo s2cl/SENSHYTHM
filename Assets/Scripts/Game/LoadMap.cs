@@ -75,20 +75,27 @@ public class LoadMap : MonoBehaviour {
 		
 		GameObject barline = (GameObject)Resources.Load("Prefabs/BarLine");
 
-		for (float bartime=0f; bartime<length + startDelayTime;){
+		// first bar
+		GameObject fbar = Instantiate(barline, new Vector3(0,bpms[0].time), Quaternion.identity);
+		fbar.name = "first bar";
+		fbar.GetComponent<BarLine>().bpmIndex = index;
+
+		for (float bartime=bpms[0].time; bartime<(length + startDelayTime);){
 			if ((index+1)<bpmsCount){
 				if ((bartime+(60 * 4 / bpms[index].bpm)) > bpms[index+1].time){
 					bartime = bpms[++index].time;
+
+					GameObject tmp = Instantiate(barline, new Vector3(0, bartime), Quaternion.identity);
+					tmp.name = "bar " + bartime.ToString();
+					tmp.GetComponent<BarLine>().bpmIndex = index;
 				}
 			}
-			else{
-				bartime += 60 * 4 / bpms[index].bpm;
-			}
 			
+			bartime += 60 * 4 / bpms[index].bpm;
+
 			Vector3 position = new Vector3(0, bartime);
 			GameObject obj = Instantiate(barline, position, Quaternion.identity);
 			obj.name = "bar " + bartime.ToString();
-
 			obj.GetComponent<BarLine>().bpmIndex = index;
 		}
 	}

@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 
-
 public class LoadSongs : MonoBehaviour {
 	public GameObject songlist;
 	public Button btn;
@@ -17,7 +16,7 @@ public class LoadSongs : MonoBehaviour {
 
 		GameObject button = (GameObject)Resources.Load("Prefabs/MapSelect/Button");
 		DirectoryInfo dir = new DirectoryInfo(Setting.SongsPath + "map");
-		FileInfo[] info = dir.GetFiles("*.json");
+		FileInfo[] info = dir.GetFiles("*.senshythm");
 
 		foreach(FileInfo f in info){
 
@@ -32,8 +31,8 @@ public class LoadSongs : MonoBehaviour {
 
 			GameObject title = ButtonObj.transform.Find("Title").gameObject;
 			GameObject artist = ButtonObj.transform.Find("Artist").gameObject;
-			title.GetComponent<Text>().text = mapdata.Title;
-			artist.GetComponent<Text>().text= mapdata.Artist;
+			title.GetComponent<Text>().text = $"{mapdata.Title}";
+			artist.GetComponent<Text>().text= $"{mapdata.Artist} // [{mapdata.Diffname}] create by {mapdata.Creator}";
 
         }
 	}
