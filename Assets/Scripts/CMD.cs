@@ -1,11 +1,14 @@
 using UnityEditor;
-
+using System.Collections;
+using System.Collections.Generic;
 public static class CMD
 {
-    public static void Download_music(string URL)
+    public static void Download_music(string URL, string id)
     {
-        
-        Call("/c youtube-dl -o \"Songs/music/%(id)s.%(ext)s\" -f 140 "+URL,false);
+        string path = Setting.SongsPath;
+        Call($"/c youtube-dl -o \"{path}/music/%(id)s.%(ext)s\" -f 140 "+URL, false);
+        Call($"/c ffmpeg -i \" {path}/music/{id}.m4a\" -vn -ac 2 -ar 44100 -ab 128k -acodec libvorbis -f ogg \" {path}/music/{id}.ogg\"");
+        Call($"/c del {path}/music/{id}.m4a");
     }
     public static void Download_video(string URL)
     {
