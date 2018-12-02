@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BarLine : MonoBehaviour {
 	float y;
+	public int bpmIndex;
 	// Use this for initialization
 	void Start () {
 		y = this.transform.position.y;
@@ -13,7 +14,7 @@ public class BarLine : MonoBehaviour {
 	void Update () {
 		float nowtime = (float)LoadMap.Music.time;
 
-		this.transform.position = new Vector3(0, y*Setting.Highspeed - nowtime*Setting.Highspeed - Setting.judgeLine + Selected.Offset + Setting.UserOffset, 1);
+		this.transform.position = new Vector3(0, y*Setting.Highspeed - nowtime*Setting.Highspeed - Setting.judgeLine + Setting.UserOffset, 1);
 		if (y - nowtime < -2){
 			Destroy(this.gameObject);
 		}

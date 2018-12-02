@@ -6,6 +6,7 @@ public class Notes : MonoBehaviour {
 	private GameObject note;
 	public float x,y;
 	public int notetype;
+	public int bpmIndex;
 
     public AudioClip song;
     public AudioSource audioSource;
@@ -22,7 +23,7 @@ public class Notes : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 		float nowtime = (float)LoadMap.Music.time;
-        this.transform.position = new Vector3(x, y*Setting.Highspeed - nowtime*Setting.Highspeed - Setting.judgeLine + Selected.Offset + Setting.UserOffset);
+        this.transform.position = new Vector3(x, y*Setting.Highspeed - nowtime*Setting.Highspeed - Setting.judgeLine + Setting.UserOffset);
 		float judgetime = y - nowtime;
 
 		// 判定後だったら

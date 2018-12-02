@@ -9,6 +9,7 @@ public class Setting{
     public static float judgeLine;
     public static List<string> LeftKeybind;
 	public static List<string> RightKeybind;
+	public static string SongsPath;
 
 	[RuntimeInitializeOnLoadMethod()]
 	static void Init()
@@ -23,6 +24,7 @@ public class Setting{
 		judgeLine	= config.judgeLine;
 		LeftKeybind	= config.LeftKeybind;
 		RightKeybind= config.RightKeybind;
+		SongsPath = Application.persistentDataPath + "/Songs/";
 	}
 
 	public void Reload(){
@@ -36,7 +38,6 @@ public class Setting{
 		judgeLine	= config.judgeLine;
 		LeftKeybind	= config.LeftKeybind;
 		RightKeybind= config.RightKeybind;
-		Debug.Log(Highspeed);
-		Debug.Log(RightKeybind);
+		SongsPath = Application.persistentDataPath + "/Songs/";
 	}
 }

@@ -16,13 +16,12 @@ public class LoadSongs : MonoBehaviour {
 		songlist = GameObject.Find("SongButton");
 
 		GameObject button = (GameObject)Resources.Load("Prefabs/MapSelect/Button");
-		DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath + "/Songs/map");
+		DirectoryInfo dir = new DirectoryInfo(Setting.SongsPath + "map");
 		FileInfo[] info = dir.GetFiles("*.json");
 
 		foreach(FileInfo f in info){
-			string mappath = "file://" + Application.persistentDataPath + "/Songs/map/" + f.Name;
-			WWW tmp = new WWW(mappath);
-			MapParam mapdata = MapParam.ReadFromJSON(tmp.text);
+
+			MapParam mapdata = MapParam.ReadWithoutNotes(f.Name);
 
 			GameObject ButtonObj = Instantiate(button, new Vector3(), Quaternion.identity);
 			ButtonObj.transform.SetParent(songlist.transform, false);

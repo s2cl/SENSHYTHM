@@ -12,20 +12,12 @@ public class LoadMap : MonoBehaviour {
 	// Map Info
 	public VideoPlayer vp;
 	public static AudioSource Music;
-	public static float mapBPM; //mapparam
-
 
 	public static int perfect=0, great=0, good=0, bad=0, poor=0;
 
-
-	// User Setting
-
-	//List<string> leftKeybind = new List<string>(Setting.LeftKeybind);
-	//List<string> rightKeybind = new List<string>(Setting.RightKeybind);
-
 	public bool playFlag = false;
 
-	private float startDelayTime = 5.0f;
+	private float startDelayTime = 3.0f;
 	private bool start = false;
 
 	GameObject circle;
@@ -34,22 +26,20 @@ public class LoadMap : MonoBehaviour {
 	// Use this for initialization
 	async void Start () {
 
-		// map情報を読み込み
-		mapBPM = Selected.BPM;
 
 		// 動画設定
-		vp = LoadVideo(Selected.Video);
+		vp = LoadVideo(Selected.Song.Video);
 		vp.Play();
 		vp.Pause();
 		
 		// 音楽設定
 		enabled = false; // Startのコルーチン完了後にUpdate処理を開始するために必要
-		Music = await LoadMusic(Selected.Audio);
+		Music = await LoadMusic(Selected.Song.Audio);
 		enabled = true;
 
-		CreateNotes(Selected.Notes);
+		CreateNotes(Selected.Song.Notes);
 
-		CreateBarLine(Selected.Length,mapBPM);
+		CreateBarLine(Selected.Song.Length, Selected.Song.BPMs);
 
 		//circle
 		circle = Instantiate((GameObject)Resources.Load("Prefabs/Circle"), new Vector3(0, -Setting.judgeLine), Quaternion.identity);
@@ -79,25 +69,40 @@ public class LoadMap : MonoBehaviour {
 	}
 
 	// lineを生成
-	void CreateBarLine(float length, float bpm){
+	void CreateBarLine(float length, List<BPM> bpms){
+		int index = 0;
+		int bpmsCount = bpms.Count();
+		
 		GameObject barline = (GameObject)Resources.Load("Prefabs/BarLine");
-		for (int i=1; i<length + startDelayTime; i+=4){
-			Vector3 position = new Vector3(0, 60 * i / bpm);
+
+		for (float bartime=0f; bartime<length + startDelayTime;){
+			if ((index+1)<bpmsCount){
+				if ((bartime+(60 * 4 / bpms[index].bpm)) > bpms[index+1].time){
+					bartime = bpms[++index].time;
+				}
+			}
+			else{
+				bartime += 60 * 4 / bpms[index].bpm;
+			}
+			
+			Vector3 position = new Vector3(0, bartime);
 			GameObject obj = Instantiate(barline, position, Quaternion.identity);
-			obj.name = "bar " + (60 * i / bpm).ToString();
+			obj.name = "bar " + bartime.ToString();
+
+			obj.GetComponent<BarLine>().bpmIndex = index;
 		}
 	}
 
 	VideoPlayer LoadVideo(string file_name){
 		VideoPlayer Video_Player = GameObject.Find("Video Player").GetComponent<VideoPlayer>();
-		Video_Player.url = Application.persistentDataPath + "/Songs/music/" + file_name;
+		Video_Player.url = Setting.SongsPath + "music/" + file_name;
 		return Video_Player;
 	}
 
 
 	async Task<AudioSource> LoadMusic(string file_name){
 		AudioSource audioSource = this.gameObject.GetComponent<AudioSource> ();
-		WWW www = await new WWW("file://" + Application.persistentDataPath + "/Songs/music/" + file_name);
+		WWW www = await new WWW("file://" + Setting.SongsPath + "music/" + file_name);
 		audioSource.clip = AddSilentTime(www.GetAudioClip(false,false));
 		return audioSource;
 	}
