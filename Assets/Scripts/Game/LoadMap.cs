@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class LoadMap : MonoBehaviour {
@@ -14,6 +15,7 @@ public class LoadMap : MonoBehaviour {
 	public static AudioSource Music;
 
 	public static int perfect=0, great=0, good=0, bad=0, poor=0;
+	Text perfectText, greatText, goodText, badText, poorText;
 
 	public bool playFlag = false;
 
@@ -25,7 +27,12 @@ public class LoadMap : MonoBehaviour {
 	
 	// Use this for initialization
 	async void Start () {
-
+		// ScoreGUI
+		perfectText = GameObject.Find("perfect").GetComponent<Text>();
+		greatText = GameObject.Find("great").GetComponent<Text>();
+		goodText = GameObject.Find("good").GetComponent<Text>();
+		badText = GameObject.Find("bad").GetComponent<Text>();
+		poorText = GameObject.Find("poor").GetComponent<Text>();
 
 		// 動画設定
 		vp = LoadVideo(Selected.Song.Video);
@@ -54,16 +61,18 @@ public class LoadMap : MonoBehaviour {
 	void CreateNotes(List<Note> notes){
 		// プレハブを取得
 		GameObject prefab = (GameObject)Resources.Load("Prefabs/note");
+		//GameObject longPrefab = (GameObject)Resources.Load("Prefabs/LongNote");
+
 		Sprite[] spriteImages = new Sprite[9];
 		for (int i=0;i<9;i++){
 			spriteImages[i] = Resources.Load("Skins/default/note" + i.ToString() , typeof(Sprite)) as Sprite;
 		}
 		foreach(Note i in notes){
 			// プレハブからインスタンスを生成
-			Vector3 position = new Vector3(i.lane, i.time + startDelayTime);
+			Vector3 position = new Vector3(i.lane/2, i.time + startDelayTime);
 			GameObject obj = Instantiate(prefab, position, Quaternion.identity);
 			obj.GetComponent<SpriteRenderer>().sprite = spriteImages[i.type];
-			obj.GetComponent<Notes>().typeset(i.type);
+			obj.GetComponent<Notes>().notetype = i.type;
 			obj.name = "note " + i.time.ToString();
 		}	
 	}
@@ -201,11 +210,11 @@ public class LoadMap : MonoBehaviour {
 				Notes note = i.GetComponent<Notes>();
 				bool judgeflag = false;
 				if (keydownset.Remove("left_note" + note.notetype.ToString())){
-					note.disable();
+					note.disable(true);
 					judgeflag = true;
 				}
 				else if (keydownset.Remove("right_note" + note.notetype.ToString())){
-					note.disable();
+					note.disable(true);
 					judgeflag = true;
 				}
 
@@ -214,28 +223,32 @@ public class LoadMap : MonoBehaviour {
 					float judgetime = note.y - (float)Music.time;
 
 					if (judgetime <= 0.02 && judgetime >= -0.02){
-						Debug.Log("Perfect!");
 						perfect++;
 					}
 					else if (judgetime <= 0.04 && judgetime >= -0.04){
-						Debug.Log("Great");
 						great++;
 					}
 					else if (judgetime <= 0.105 && judgetime >= -0.105){
-						Debug.Log("good");
 						good++;
 					}
 					else if (judgetime <= 0.15 && judgetime >= -0.15){
-						Debug.Log("bad...");
 						bad++;
 					}
 					else{
-						Debug.Log("poor");
 						poor++;
 					}
 					
 				}
 			}
 		}
+		SetScoreGUI();
+	}
+
+	public void SetScoreGUI(){
+		perfectText.text = perfect.ToString();
+		greatText.text = great.ToString();
+		goodText.text = good.ToString();
+		badText.text = bad.ToString();
+		poorText.text = poor.ToString();
 	}
 }
