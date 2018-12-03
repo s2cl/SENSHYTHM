@@ -33,11 +33,100 @@ public class MapParam {
     public int Length;
     public List<BPM> BPMs;
     public List<Note> Notes;
+
+    public void AddMatadata(string key, string value){
+        switch(key){
+            case "Site":
+                map.Site = value;
+                break;
+            case "SiteId":
+                map.SiteId = value;
+                break;
+            case "Audio":
+                map.Audio = value;
+                break;
+            case "Video":
+                map.Video = value;
+                break;
+            case "Title":
+                map.Title = value;
+                break;
+            case "Artist":
+                map.Artist = value;
+                break;
+            case "Creator":
+                map.Creator = value;
+                break;
+            case "CreaterId":
+                map.CreaterId = int.Parse(value);
+                break;
+            case "Diffname":
+                map.Diffname = value;
+                break;
+            default:
+                break;
+        }
+        break;
+    }
+
+    public void AddBPM(string[] bpmStringList){
+        BPM bpm = new BPM();
+        int index=0;
+        bpm.time = float.Parse(bpmStringList[index++]);
+        bpm.bpm=float.Parse(bpmStringList[index++]);
+        bpm.option=int.Parse(bpmStringList[index++]);
+        if ((bpm.option&1<<0) != 0) bpm.numer = int.Parse(bpmStringList[index++]);
+        if ((bpm.option&1<<0) != 0) bpm.denom = int.Parse(bpmStringList[index++]);
+        this.BPMs.Add(bpm);
+    }
+
+    public void AddNotes(string[] noteStringList){
+        Note note = new Note();
+        int index=0;
+        this.Length = (int)System.Math.Max(this.Length, float.Parse(noteStringList[index]));
+        note.time   = float.Parse(noteStringList[index++]);
+        note.lane   = float.Parse(noteStringList[index++]);
+        note.type   = int.Parse(noteStringList[index++]);
+        note.option = int.Parse(noteStringList[index++]);
+        if ((note.option&1<<0) != 0) note.hitsound = noteStringList[index++];
+        this.Notes.Add(note);
+    }
+
+
+    public void SetParam(string line, int option, bool noteLoad=true){
+        switch(option){    
+            case 0:
+                break;
+            case 1:
+            // read metadata
+                string key = line.Split(':')[0];
+                string value = line.Split(':')[1]; 
+                this.AddMatadata(key, value);
+                break;
+            case 2:
+            // read bpms
+                string[] bpmStringList = line.Split(',');
+                this.AddBPM(bpmStringList);
+                break;
+
+            case 3:
+            // read notes
+                string[] noteStringList = line.Split(',');
+                if (noteLoad){
+                    this.AddNotes(noteStringList);
+                }
+                else{
+                    this.Length = (int)System.Math.Max(this.Length, float.Parse(noteStringList[0]));
+                }
+                
+                break;
+        }
+    }
+
     
     public static MapParam ReadWithoutNotes(string filename){
         MapParam readParam = new MapParam();
         readParam.BPMs = new List<BPM>();
-        readParam.Notes= new List<Note>();
 
         string path = "file://" + Setting.SongsPath + "map/" + filename;
         Debug.Log("reading:"+path);
@@ -49,82 +138,16 @@ public class MapParam {
 
         while(true){
             line = strReader.ReadLine();
-
             if(line!=null){
                 if (line.Equals("[metadata]")) readOption = 1;
                 else if (line.Equals("[BPMs]")) readOption = 2;
                 else if (line.Equals("[Notes]")) readOption = 3;
-                else{
-                    int index=0;
-                    switch(readOption){
-                        
-                        case 0:
-                            break;
-                        case 1:
-                        // read metadata
-                        string key = line.Split(':')[0];
-                        string value = line.Split(':')[1]; 
-                            switch(key){
-                                case "Site":
-                                    readParam.Site = value;
-                                    break;
-                                case "SiteId":
-                                    readParam.SiteId = value;
-                                    break;
-                                case "Audio":
-                                    readParam.Audio = value;
-                                    break;
-                                case "Video":
-                                    readParam.Video = value;
-                                    break;
-                                case "Title":
-                                    readParam.Title = value;
-                                    break;
-                                case "Artist":
-                                    readParam.Artist = value;
-                                    break;
-                                case "Creator":
-                                    readParam.Creator = value;
-                                    break;
-                                case "CreaterId":
-                                    readParam.CreaterId = int.Parse(value);
-                                    break;
-                                case "Diffname":
-                                    readParam.Diffname = value;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-
-                        case 2:
-                            // read bpms
-                            BPM bpm = new BPM();
-                            string[] bpmtmp = line.Split(',');
-                            bpm.time = float.Parse(bpmtmp[index++]);
-                            bpm.bpm=float.Parse(bpmtmp[index++]);
-                            bpm.option=int.Parse(bpmtmp[index++]);
-                            if ((bpm.option&1<<0) !=0) bpm.numer = int.Parse(bpmtmp[index++]);
-                            if ((bpm.option&1<<1) !=0) bpm.denom = int.Parse(bpmtmp[index++]);
-
-                            readParam.BPMs.Add(bpm);
-                            break;
-
-                        case 3:
-                            // read notes
-                            string[] notetmp = line.Split(',');
-                            readParam.Length =  (int)System.Math.Max(readParam.Length, float.Parse(notetmp[index]));
-                            break;
-                        }
-                    }
-                }
-                else{
-                    break;
+                else readParam.SetParam(line, readOption, false);
                 }
             }
-
         return readParam;
     }
+
 
     public static MapParam ReadWithNotes(string filename){
         MapParam readParam = new MapParam();
@@ -140,91 +163,13 @@ public class MapParam {
 
         while(true){
             line = strReader.ReadLine();
-
             if(line!=null){
                 if (line.Equals("[metadata]")) readOption = 1;
                 else if (line.Equals("[BPMs]")) readOption = 2;
                 else if (line.Equals("[Notes]")) readOption = 3;
-                else{
-                    int index=0;
-                    switch(readOption){
-                        
-                        case 0:
-                            break;
-                        case 1:
-                        // read metadata
-                        string key = line.Split(':')[0];
-                        string value = line.Split(':')[1]; 
-                            switch(key){
-                                case "Site":
-                                    readParam.Site = value;
-                                    break;
-                                case "SiteId":
-                                    readParam.SiteId = value;
-                                    break;
-                                case "Audio":
-                                    readParam.Audio = value;
-                                    break;
-                                case "Video":
-                                    readParam.Video = value;
-                                    break;
-                                case "Title":
-                                    readParam.Title = value;
-                                    break;
-                                case "Artist":
-                                    readParam.Artist = value;
-                                    break;
-                                case "Creator":
-                                    readParam.Creator = value;
-                                    break;
-                                case "CreaterId":
-                                    readParam.CreaterId = int.Parse(value);
-                                    break;
-                                case "Diffname":
-                                    readParam.Diffname = value;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-
-                        case 2:
-                        // read bpms
-                            BPM bpm = new BPM();
-                            
-
-                            string[] bpmtmp = line.Split(',');
-                            bpm.time = float.Parse(bpmtmp[index++]);
-                            bpm.bpm=float.Parse(bpmtmp[index++]);
-                            bpm.option=int.Parse(bpmtmp[index++]);
-                            if ((bpm.option&1<<0) != 0) bpm.numer = int.Parse(bpmtmp[index++]);
-                            if ((bpm.option&1<<0) != 0) bpm.denom = int.Parse(bpmtmp[index++]);
-
-                            readParam.BPMs.Add(bpm);
-                            break;
-
-                        case 3:
-                        // read notes
-                            Note note = new Note();
-                            string[] notetmp = line.Split(',');
-                            readParam.Length = (int)System.Math.Max(readParam.Length, float.Parse(notetmp[index]));
-                            note.time   = float.Parse(notetmp[index++]);
-                            note.lane   = float.Parse(notetmp[index++]);
-                            note.type   = int.Parse(notetmp[index++]);
-                            note.option = int.Parse(notetmp[index++]);
-                            if ((note.option&1<<0) != 0) note.hitsound = notetmp[index++];
-                            
-                            readParam.Notes.Add(note);
-                            break;
-                        }
-                    }
-                }
-                else{
-                    break;
+                else readParam.SetParam(line, readOption);
                 }
             }
-        Debug.Log(readParam.Length);
-
         return readParam;
     }
 
