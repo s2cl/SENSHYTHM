@@ -30,7 +30,7 @@ public class MapParam {
     public string Creator;
     public int CreaterId;
     public string Diffname;
-    public int Length;
+    public int Length = 0;
     public List<BPM> BPMs;
     public List<Note> Notes;
 
@@ -66,7 +66,6 @@ public class MapParam {
             default:
                 break;
         }
-        break;
     }
 
     public void AddBPM(string[] bpmStringList){
@@ -123,27 +122,13 @@ public class MapParam {
         }
     }
 
-    
-    public static MapParam ReadWithoutNotes(string filename){
-        MapParam readParam = new MapParam();
-        readParam.BPMs = new List<BPM>();
-
-        StringReader strReader = GetStringReader(filename);
-        string line = null;
-        int readOption = 0;
-        readParam.Length = 0;
-
-        while(true){
-            line = strReader.ReadLine();
-            if(line!=null){
-                if (line.Equals("[metadata]")) readOption = 1;
-                else if (line.Equals("[BPMs]")) readOption = 2;
-                else if (line.Equals("[Notes]")) readOption = 3;
-                else readParam.SetParam(line, readOption, false);
-                }
-            }
-        return readParam;
+    public static StringReader GetStringReader(string filename){
+        string path = "file://" + Setting.SongsPath + "map/" + filename;
+        Debug.Log("reading:"+path);
+        WWW tmp = new WWW(path);
+        return new StringReader(tmp.text);
     }
+
 
     public static MapParam ReadData(string filename,bool hasNotes=false){
         MapParam readParam = new MapParam();
@@ -151,33 +136,17 @@ public class MapParam {
         if(hasNotes){
             readParam.Notes= new List<Note>();
         }
-        else{
-            readParam.Notes= null;
-        }
 
-        StringReader strReader = GetStringReader(filename);
-        string line = null;
+        StringReader strReader = MapParam.GetStringReader(filename);
         int readOption = 0;
-        readParam.Length = 0;
 
-        while(true){
-            line = strReader.ReadLine();
-            if(line!=null){
-                if (line.Equals("[metadata]")) readOption = 1;
-                else if (line.Equals("[BPMs]")) readOption = 2;
-                else if (line.Equals("[Notes]")) readOption = 3;
-                else readParam.SetParam(line, readOption, hasNotes);
-                }
-            }
+        for(string line=strReader.ReadLine(); line!=null; line=strReader.ReadLine()){
+            if (line.Equals("[metadata]")) readOption = 1;
+            else if (line.Equals("[BPMs]")) readOption = 2;
+            else if (line.Equals("[Notes]")) readOption = 3;
+            else readParam.SetParam(line, readOption, hasNotes);
+        }
         return readParam;
-    }
-    
-
-    public StringReader GetStringReader(string filename){
-        string path = "file://" + Setting.SongsPath + "map/" + filename;
-        Debug.Log("reading:"+path);
-        WWW tmp = new WWW(path);
-        return new StringReader(tmp.text);
     }
 
 
