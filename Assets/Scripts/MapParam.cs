@@ -37,31 +37,31 @@ public class MapParam {
     public void AddMatadata(string key, string value){
         switch(key){
             case "Site":
-                map.Site = value;
+                this.Site = value;
                 break;
             case "SiteId":
-                map.SiteId = value;
+                this.SiteId = value;
                 break;
             case "Audio":
-                map.Audio = value;
+                this.Audio = value;
                 break;
             case "Video":
-                map.Video = value;
+                this.Video = value;
                 break;
             case "Title":
-                map.Title = value;
+                this.Title = value;
                 break;
             case "Artist":
-                map.Artist = value;
+                this.Artist = value;
                 break;
             case "Creator":
-                map.Creator = value;
+                this.Creator = value;
                 break;
             case "CreaterId":
-                map.CreaterId = int.Parse(value);
+                this.CreaterId = int.Parse(value);
                 break;
             case "Diffname":
-                map.Diffname = value;
+                this.Diffname = value;
                 break;
             default:
                 break;
@@ -83,7 +83,7 @@ public class MapParam {
     public void AddNotes(string[] noteStringList){
         Note note = new Note();
         int index=0;
-        this.Length = (int)System.Math.Max(this.Length, float.Parse(noteStringList[index]));
+        this.Length = (int)System.Math.Max(this.Length, float.Parse(noteStringList[0]));
         note.time   = float.Parse(noteStringList[index++]);
         note.lane   = float.Parse(noteStringList[index++]);
         note.type   = int.Parse(noteStringList[index++]);
@@ -128,10 +128,7 @@ public class MapParam {
         MapParam readParam = new MapParam();
         readParam.BPMs = new List<BPM>();
 
-        string path = "file://" + Setting.SongsPath + "map/" + filename;
-        Debug.Log("reading:"+path);
-        WWW tmp = new WWW(path);
-        StringReader strReader = new StringReader(tmp.text);
+        StringReader strReader = GetStringReader(filename);
         string line = null;
         int readOption = 0;
         readParam.Length = 0;
@@ -148,18 +145,20 @@ public class MapParam {
         return readParam;
     }
 
-
-    public static MapParam ReadWithNotes(string filename){
+    public static MapParam ReadData(string filename,bool hasNotes=false){
         MapParam readParam = new MapParam();
         readParam.BPMs = new List<BPM>();
-        readParam.Notes= new List<Note>();
-        
-        string path = "file://" + Setting.SongsPath + "map/" + filename;
-        Debug.Log("reading:"+path);
-        WWW tmp = new WWW(path);
-        StringReader strReader = new StringReader(tmp.text);
+        if(hasNotes){
+            readParam.Notes= new List<Note>();
+        }
+        else{
+            readParam.Notes= null;
+        }
+
+        StringReader strReader = GetStringReader(filename);
         string line = null;
         int readOption = 0;
+        readParam.Length = 0;
 
         while(true){
             line = strReader.ReadLine();
@@ -167,10 +166,19 @@ public class MapParam {
                 if (line.Equals("[metadata]")) readOption = 1;
                 else if (line.Equals("[BPMs]")) readOption = 2;
                 else if (line.Equals("[Notes]")) readOption = 3;
-                else readParam.SetParam(line, readOption);
+                else readParam.SetParam(line, readOption, hasNotes);
                 }
             }
         return readParam;
     }
+    
+
+    public StringReader GetStringReader(string filename){
+        string path = "file://" + Setting.SongsPath + "map/" + filename;
+        Debug.Log("reading:"+path);
+        WWW tmp = new WWW(path);
+        return new StringReader(tmp.text);
+    }
+
 
 }

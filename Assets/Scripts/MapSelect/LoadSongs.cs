@@ -20,7 +20,7 @@ public class LoadSongs : MonoBehaviour {
 
 		foreach(FileInfo f in info){
 
-			MapParam mapdata = MapParam.ReadWithoutNotes(f.Name);
+			MapParam mapdata = MapParam.ReadData(f.Name);
 
 			GameObject ButtonObj = Instantiate(button, new Vector3(), Quaternion.identity);
 			ButtonObj.transform.SetParent(songlist.transform, false);
