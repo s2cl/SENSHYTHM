@@ -39,7 +39,7 @@ public class MapParam {
         readParam.BPMs = new List<BPM>();
         readParam.Notes= new List<Note>();
 
-        string path = Setting.SongsPath + "map/" + filename;
+        string path = "file://" + Setting.SongsPath + "map/" + filename;
         Debug.Log("reading:"+path);
         WWW tmp = new WWW(path);
         StringReader strReader = new StringReader(tmp.text);
@@ -131,7 +131,7 @@ public class MapParam {
         readParam.BPMs = new List<BPM>();
         readParam.Notes= new List<Note>();
         
-        string path = Setting.SongsPath + "map/" + filename;
+        string path = "file://" + Setting.SongsPath + "map/" + filename;
         Debug.Log("reading:"+path);
         WWW tmp = new WWW(path);
         StringReader strReader = new StringReader(tmp.text);
