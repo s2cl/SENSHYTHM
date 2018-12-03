@@ -234,7 +234,6 @@ public class LoadMap : MonoBehaviour {
 						poor++;
 					}
 					
-					Destroy(i);
 				}
 			}
 		}

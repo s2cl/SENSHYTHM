@@ -34,8 +34,7 @@ public class Notes : MonoBehaviour {
 			this.GetComponent<Notes>().enabled = false;
 			this.GetComponent<SpriteRenderer>().enabled = false;
 			Debug.Log("poor");
-			
-			//Destroy(this.gameObject);
+
 		}
 		// 判定前だったら
 		else if (judgetime < 0.2){			
@@ -56,6 +55,7 @@ public class Notes : MonoBehaviour {
 		this.GetComponent<Notes>().enabled = false;
 		this.GetComponent<SpriteRenderer>().enabled = false;
 		audioSource.PlayOneShot(song, 1f);
+
 	}
 
 	public void typeset(int ntype){
