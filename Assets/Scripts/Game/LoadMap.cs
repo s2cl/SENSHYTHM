@@ -64,7 +64,7 @@ public class LoadMap : MonoBehaviour {
 		//GameObject longPrefab = (GameObject)Resources.Load("Prefabs/LongNote");
 
 		Sprite[] spriteImages = new Sprite[9];
-		for (int i=0;i<9;i++){
+		for (int i=0;i<9;++i){
 			spriteImages[i] = Resources.Load("Skins/default/note" + i.ToString() , typeof(Sprite)) as Sprite;
 		}
 		foreach(Note i in notes){
@@ -177,6 +177,8 @@ public class LoadMap : MonoBehaviour {
 		}
 
 		if (!playFlag)return; // ポーズ中の判定停止
+
+
 		// ハイスピ
 		if (Input.GetKeyDown(KeyCode.F3)){
 			Setting.Highspeed += 0.5f;
@@ -202,13 +204,14 @@ public class LoadMap : MonoBehaviour {
 		if (notes.Length!=0){
 			circle.transform.position = new Vector3(notes[0].transform.position.x, -Setting.judgeLine, 0.5f);
 
-			for (int i=0;i<9;i++){
+			for (int i=0;i<9;++i){
 				if (Input.GetKeyDown(Setting.LeftKeybind[i])) keydownset.Add("left_note"+i.ToString());
 				if (Input.GetKeyDown(Setting.RightKeybind[i])) keydownset.Add("right_note"+i.ToString());
 			}
 
 			foreach(GameObject i in notes){
 				Notes note = i.GetComponent<Notes>();
+				Debug.Log(note.notetype);
 				bool judgeflag = false;
 				if (keydownset.Remove("left_note" + note.notetype.ToString())){
 					note.disable(true);
@@ -219,24 +222,25 @@ public class LoadMap : MonoBehaviour {
 					judgeflag = true;
 				}
 
-				if (judgeflag){
+
+                if (judgeflag){
 
 					float judgetime = note.y - (float)Music.time;
 
 					if (judgetime <= 0.02 && judgetime >= -0.02){
-						perfect++;
+						++perfect;
 					}
 					else if (judgetime <= 0.04 && judgetime >= -0.04){
-						great++;
+						++great;
 					}
 					else if (judgetime <= 0.105 && judgetime >= -0.105){
-						good++;
+						++good;
 					}
 					else if (judgetime <= 0.15 && judgetime >= -0.15){
-						bad++;
+						++bad;
 					}
 					else{
-						poor++;
+						++poor;
 					}
 					
 				}
