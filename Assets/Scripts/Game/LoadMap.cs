@@ -21,7 +21,6 @@ public class LoadMap : MonoBehaviour {
 
 	private float startDelayTime = 3.0f;
 	private bool start = false;
-	private bool not_judge = true;
 
 	GameObject circle;
 
@@ -151,11 +150,6 @@ public class LoadMap : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (not_judge)
-        {
-            not_judge = !not_judge;
-            return;
-        }
 		if(!start && Music.time >= startDelayTime){
 			start = true;
 			vp.Play();
