@@ -213,11 +213,7 @@ public class LoadMap : MonoBehaviour {
 				Notes note = i.GetComponent<Notes>();
 				Debug.Log(note.notetype);
 				bool judgeflag = false;
-				if (keydownset.Remove("left_note" + note.notetype.ToString())){
-					note.disable(true);
-					judgeflag = true;
-				}
-				else if (keydownset.Remove("right_note" + note.notetype.ToString())){
+				if (keydownset.Remove("left_note" + note.notetype.ToString()) || keydownset.Remove("right_note" + note.notetype.ToString())){
 					note.disable(true);
 					judgeflag = true;
 				}
