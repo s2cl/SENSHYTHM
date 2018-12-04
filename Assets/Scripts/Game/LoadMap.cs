@@ -229,16 +229,16 @@ public class LoadMap : MonoBehaviour {
 
 					float judgetime = note.y - (float)Music.time;
 
-					if (judgetime <= 0.02 && judgetime >= -0.02){
+					if ( -0.02 <= judgetime && judgetime <= 0.02){
 						++perfect;
 					}
-					else if (judgetime <= 0.04 && judgetime >= -0.04){
+					else if ( -0.04 <= judgetime && judgetime <= 0.04){
 						++great;
 					}
-					else if (judgetime <= 0.105 && judgetime >= -0.105){
+					else if ( -0.105 <= judgetime && judgetime <= 0.105){
 						++good;
 					}
-					else if (judgetime <= 0.15 && judgetime >= -0.15){
+					else if (-0.15 <= judgetime && judgetime <= 0.15){
 						++bad;
 					}
 					else{
