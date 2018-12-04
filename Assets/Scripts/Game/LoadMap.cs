@@ -176,6 +176,7 @@ public class LoadMap : MonoBehaviour {
 			}
 		}
 
+		if (!playFlag)return; // ポーズ中の判定停止
 		// ハイスピ
 		if (Input.GetKeyDown(KeyCode.F3)){
 			Setting.Highspeed += 0.5f;
