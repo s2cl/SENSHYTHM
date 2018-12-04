@@ -25,6 +25,7 @@ public class Setting{
 		LeftKeybind	= config.LeftKeybind;
 		RightKeybind= config.RightKeybind;
 		SongsPath = Application.persistentDataPath + "/Songs/";
+		Debug.Log(SongsPath);
 	}
 
 	public void Reload(){
