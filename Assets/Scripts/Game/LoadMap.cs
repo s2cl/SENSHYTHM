@@ -155,9 +155,6 @@ public class LoadMap : MonoBehaviour {
 			vp.Play();
 		}
 
-		// 押したキーを格納するset
-		HashSet<string> keydownset = new HashSet<string>();
-
 		// 一時停止
 		
 		if (Input.GetKeyDown(KeyCode.Escape)){
@@ -202,7 +199,10 @@ public class LoadMap : MonoBehaviour {
 		GameObject[] notes = GameObject.FindGameObjectsWithTag("judgenotes");
 
 		if (notes.Length!=0){
-			circle.transform.position = new Vector3(notes[0].transform.position.x, -Setting.judgeLine, 0.5f);
+            // 押したキーを格納するset
+            HashSet<string> keydownset = new HashSet<string>();
+
+            circle.transform.position = new Vector3(notes[0].transform.position.x, -Setting.judgeLine, 0.5f);
 
 			for (int i=0;i<9;++i){
 				if (Input.GetKeyDown(Setting.LeftKeybind[i])) keydownset.Add("left_note"+i.ToString());
