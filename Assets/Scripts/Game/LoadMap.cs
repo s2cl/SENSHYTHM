@@ -24,6 +24,8 @@ public class LoadMap : MonoBehaviour {
 
 	GameObject circle;
 
+	List<bool> keyDownList = new List<bool>(){false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+
 	
 	// Use this for initialization
 	async void Start () {
@@ -155,12 +157,20 @@ public class LoadMap : MonoBehaviour {
 			vp.Play();
 		}
 
-		// 押したキーを格納するset
-		HashSet<string> keydownset = new HashSet<string>();
+		if (Input.anyKeyDown){
+			GameObject[] notes = GameObject.FindGameObjectsWithTag("judgenotes");
+			// 判定
+			DownKeyAction(notes);
+			SetScoreGUI();
+		}
+
+	}
+
+	
+	public void DownKeyAction(GameObject[] notes){
 
 		// 一時停止
-		
-		if (Input.GetKeyDown(KeyCode.Escape)){
+		if (Input.GetButtonDown("Cancel")){
 			if (playFlag){
 				Music.Pause();
 				if(start) vp.Pause();
@@ -176,73 +186,69 @@ public class LoadMap : MonoBehaviour {
 			}
 		}
 
-		// ハイスピ
-		if (Input.GetKeyDown(KeyCode.F3)){
-			Setting.Highspeed += 0.5f;
-			Debug.Log("Highspeed : "+ Setting.Highspeed.ToString());
-		}
-		else if (Input.GetKeyDown(KeyCode.F4)){
-			Setting.Highspeed -= 0.5f;
-			Debug.Log("Highspeed : "+ Setting.Highspeed.ToString());
-		}
+		// ハイスピ変更
+		if (Input.GetButtonDown("HighSpeedUp")) Setting.Highspeed += 1f;
+		else if (Input.GetButtonDown("HighSpeedDown")) Setting.Highspeed -= 1f;
 
-		if (Input.GetKeyDown(KeyCode.F5)){
-			Setting.UserOffset += 0.05f;
-			Debug.Log("UserOffset : "+ Setting.UserOffset.ToString());
-		}
-		else if (Input.GetKeyDown(KeyCode.F6)){
-			Setting.UserOffset -= 0.05f;
-			Debug.Log("UserOffset : "+ Setting.UserOffset.ToString());
-		}
+		// オフセット変更
+		if (Input.GetButtonDown("OffsetPlus")) Setting.UserOffset += 0.05f;
+		else if (Input.GetButtonDown("OffsetMinus")) Setting.UserOffset -= 0.05f;
 
 		// 判定
-		GameObject[] notes = GameObject.FindGameObjectsWithTag("judgenotes");
+		// 押したキーを格納するlist keyDownList
 
-		if (notes.Length!=0){
-			circle.transform.position = new Vector3(notes[0].transform.position.x, -Setting.judgeLine, 0.5f);
+		for (int i=0;i<9;i++){
+			if (Input.GetButtonDown("LeftNote" +i.ToString())) keyDownList[i*2] = true;
+			else keyDownList[i*2] = false;
 
-			for (int i=0;i<9;i++){
-				if (Input.GetKeyDown(Setting.LeftKeybind[i])) keydownset.Add("left_note"+i.ToString());
-				if (Input.GetKeyDown(Setting.RightKeybind[i])) keydownset.Add("right_note"+i.ToString());
-			}
+			if (Input.GetButtonDown("RightNote"+i.ToString())) keyDownList[i*2+1] = true;
+			else keyDownList[i*2+1] = false;
+		}
 
-			foreach(GameObject i in notes){
-				Notes note = i.GetComponent<Notes>();
-				bool judgeflag = false;
-				if (keydownset.Remove("left_note" + note.notetype.ToString())){
-					note.disable(true);
-					judgeflag = true;
-				}
-				else if (keydownset.Remove("right_note" + note.notetype.ToString())){
-					note.disable(true);
-					judgeflag = true;
-				}
 
-				if (judgeflag){
-
-					float judgetime = note.y - (float)Music.time;
-
-					if (judgetime <= 0.02 && judgetime >= -0.02){
-						perfect++;
-					}
-					else if (judgetime <= 0.04 && judgetime >= -0.04){
-						great++;
-					}
-					else if (judgetime <= 0.105 && judgetime >= -0.105){
-						good++;
-					}
-					else if (judgetime <= 0.15 && judgetime >= -0.15){
-						bad++;
-					}
-					else{
-						poor++;
-					}
-					
-				}
+		foreach(GameObject i in notes){
+			Notes note = i.GetComponent<Notes>();
+			if (IsDown(note.notetype)){
+				note.disable(true);
+				circle.transform.position = new Vector3(notes[0].transform.position.x, -Setting.judgeLine, 0.5f);
+				float judgetime = note.y - Music.time;
+				JudgeCount(judgetime);
 			}
 		}
-		SetScoreGUI();
+
 	}
+
+	public bool IsDown(int notetype){
+		if (keyDownList[notetype*2]){
+			keyDownList[notetype*2] = false;
+			return true;
+			}
+		if (keyDownList[notetype*2+1]){
+			keyDownList[notetype*2+1] = false;
+			return true;
+			}
+		return false;
+	}
+
+
+	public void JudgeCount(float judgetime){
+		if (judgetime <= 0.02 && judgetime >= -0.02){
+			perfect++;
+		}
+		else if (judgetime <= 0.04 && judgetime >= -0.04){
+			great++;
+		}
+		else if (judgetime <= 0.105 && judgetime >= -0.105){
+			good++;
+		}
+		else if (judgetime <= 0.15 && judgetime >= -0.15){
+			bad++;
+		}
+		else{
+			poor++;
+		}
+	}
+
 
 	public void SetScoreGUI(){
 		perfectText.text = perfect.ToString();
