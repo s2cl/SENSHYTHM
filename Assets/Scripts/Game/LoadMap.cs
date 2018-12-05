@@ -161,8 +161,9 @@ public class LoadMap : MonoBehaviour {
 			GameObject[] notes = GameObject.FindGameObjectsWithTag("judgenotes");
 			// 判定
 			DownKeyAction(notes);
-			SetScoreGUI();
 		}
+		SetScoreGUI();
+		
 
 	}
 

@@ -10,7 +10,10 @@ public class Notes : MonoBehaviour {
 
     AudioClip song;
 	AudioSource audioSource;
+
+	ParticleSystem particle;
 	public bool DisplayFlag=false;
+
 
     // Use this for initialization
     void Start () {
@@ -19,6 +22,7 @@ public class Notes : MonoBehaviour {
         song = Resources.Load<AudioClip>("Songs/hitclap");
         audioSource = this.gameObject.GetComponent<AudioSource>();
 		audioSource.clip = song;
+		particle = this.GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -53,7 +57,10 @@ public class Notes : MonoBehaviour {
 		this.tag = "judgeignore";
 		this.enabled = false;
 		this.GetComponent<SpriteRenderer>().enabled = false;
-		if (playHitSound) audioSource.PlayOneShot(song, 0.5f);
+		if (playHitSound) {
+		audioSource.PlayOneShot(song, 0.5f);
+		particle.Play();
+		}
 	}
 
 
